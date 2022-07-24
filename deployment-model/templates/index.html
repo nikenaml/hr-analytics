@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous"> -->
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet" />
+    <!-- <link rel="stylesheet" href="https://rsms.me/inter/inter.css"> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+    <title>HR Analytics Application</title>
+</head>
+
+<body class="
+            flex flex-col
+            justify-between
+            item-center
+            p-8
+            min-h-screen
+            bg-blue-500
+            text-gray-800
+            md:flex-row
+        ">
+    <main class="bg-white p-16 rounded-lg w-3/6">
+        <h1 class="text-3xl font-bold mb-8">
+            Employee Promotion Prediction
+        </h1>
+
+        <form action="{{ url_for('predict') }}" method="post" class="flex flex-col">
+            <label class="mb-2">Average Training Score</label>
+            <input type="number" name="avg_training_score" placeholder="Insert Average Training Score" required class="p-4 mb-4 bg-gray-100 rounded-md" />
+
+            <label class="mb-2">Key Performance Indicator > 80%</label>
+            <select name="kpis_met" id="kpis_met" class="p-4 mb-4 bg-gray-100 rounded-md">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+
+            <label class="mb-2">Previous Year Rating</label>
+            <input type="number" min="1" max="5" name="previous_year_rating" placeholder="Insert Previous Year Rating" required class="p-4 mb-4 bg-gray-100 rounded-md" />
+
+            <label class="mb-2">Awards Won</label>
+            <select name="awards_won" id="awards_won" class="p-4 mb-4 bg-gray-100 rounded-md">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+
+            <label class="mb-2">
+                Education:
+            </label>
+            <select name="education" id="education" class="p-4 mb-4 bg-gray-100 rounded-md">
+                <option value="master">Master's & Above</option>
+                <option value="bachelor">Bachelor's</option>
+                <option value="below">Below Secondary</option>
+            </select>
+
+            <label class="mb-2">Number of Training</label>
+            <input type="number" min="1" max="99" name="no_of_trainings" placeholder="Insert Number of Training" required class="p-4 mb-4 bg-gray-100 rounded-md" />
+
+            <label class="mb-2">Length of Service</label>
+            <input type="number" min="1" max="50" name="length_of_service" placeholder="Insert Length of Service" required class="p-4 mb-4 bg-gray-100 rounded-md" />
+
+            <!-- <label class="mb-2">Age</label>
+            <input type="number" name="age" placeholder="Insert Age" required class="p-4 mb-4 bg-gray-100 rounded-md" /> -->
+
+            <label class="mb-2">
+                Age:
+            </label>
+            <select name="age" id="age" class="p-4 mb-4 bg-gray-100 rounded-md">
+                <option value="20-30">20-30</option>
+                <option value="31-40">31-40</option>
+                <option value="41+">41+</option>
+            </select>
+
+            <!-- <label class="mb-2">
+                    Gender:
+                </label>
+            <select name="gender" id="gender" class="p-4 mb-4 bg-gray-100 rounded-md">
+                    <option value="m">Male</option>
+                    <option value="f">Female</option>
+                </select> -->
+
+            <label class="mb-2">
+                    Recruitment Channel:
+                </label>
+            <select name="recruitment_channel" id="recruitment_channel" class="p-4 mb-4 bg-gray-100 rounded-md">
+                    <option value="sourcing">Sourcing</option>
+                    <option value="referred">Referred</option>
+                    <option value="other">Other</option>
+                </select>
+
+            <label class="mb-2">
+                    Department:
+                </label>
+            <select name="department" id="department" class="p-4 mb-4 bg-gray-100 rounded-md">
+                    <option value="technology">Technology</option>
+                    <option value="analytics">Analytics</option>
+                    <option value="sales_marketing">Sales And Marketing</option>
+                    <option value="rnd">R&D (Research and Development)</option>
+                    <option value="procurement">Procurement</option>
+                    <option value="operations">Operations</option>
+                    <option value="finance">Finance</option>
+                    <option value="legal">Legal</option>
+                    <option value="HR">HR</option>
+                </select>
+
+            <button type="submit" class="
+                        flex
+                        justify-center
+                        align-center
+                        mt-8
+                        p-4
+                        bg-blue-600
+                        text-white
+                        rounded-md
+                    ">
+                    Predict Now
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="feather feather-arrow-right ml-4"
+                    >
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </button>
+        </form>
+    </main>
+    <section class="mt-8 h-full flex-auto rounded-lg md:mt-0 md:ml-8">
+        <div class="bg-white p-16 rounded-lg">
+            <h1 class="text-2xl font-bold mb-8">
+                Prediction Result
+            </h1>
+
+            <h2 class="text-5xl font-bold">{{ output }}</h2>
+            <!-- {% if (output) != 0 %} -->
+            <div class="mt-8">
+                <!-- <p>MRP: {{ avg_training_score }} tahun</p>
+                    <p>Grocery Store: {{ grocery_store }}</p>
+                    <p>Year: {{ year }}</p>
+                    <p>Outlet_identifier: {{ out }} </p>
+                    <p>Item Weight: {{ weight }} </p>
+                    <p>Item Visibility: {{ visibility}} </p> -->
+            </div>
+            <!-- {% endif %} -->
+        </div>
+        <div class="overflow-x-auto">
+            <div class="bg-white p-12 max-w-full rounded-lg mt-8">
+                <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
+                    <div class="align-middle inline-block sm:px-6 lg:px-8">
+                        <table class="table-auto divide-y divide-gray-200">
+                            <h1 class="text-2xl font-bold mb-8 text-center">
+                                Rules for filling out the form
+                            </h1>
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Field Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Criteria for Input</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Average Training Score
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Average score in current training evaluations.
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Rated on numerical score
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Key Performance Indicator
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            It is a categorical variable with 2 categories where 1 indicates those employees whose Key 
+                                            Performance Indicators was greater than 80% and 0 represents the rest
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Yes or No
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Previous Year Rating
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Employee Rating for the previous year. It is a categorical variable as there are rated on a scale of 1 to 5
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Rated on a scale of 1 to 5
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Awards Won
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            It is a categorical variable with 2 categories where 1 indicates a employee who has won an award and 0 represnts the rest
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Yes or No
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Education
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Education level of the employee
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Below Secondary,Bachelor's,Master's & above
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Number of Training
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            No of other trainings the employee has completed in previous year on soft skills, technical skills etc
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Rated on a scale of 1 to 99
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Length of Service
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            For how many years the employee has been working
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Rated on a scale of 1 to 50
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Age
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Age of the employee
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            20-30,31-40,41+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- <tr>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Gender
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Gender is a categorical variables with 2 categories: Male and Female
+                                        </div>
+                                    </td>
+                                </tr> -->
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Recruitment Channel
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Channel of recruitment for employee contains 3 categories: sourcing, referred and other
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Channel sourcing, referred and other
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Department
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            The various departments in which employees are there in the company
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-normal">
+                                        <div class="text-sm break-words text-gray-900">
+                                            Technology,Analytics,Sales&Marketing,R&D, Procurement,Operations,Finance,Legal,HR
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>
